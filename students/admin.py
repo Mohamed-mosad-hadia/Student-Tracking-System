@@ -22,7 +22,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'group', 'registration_date']
+    list_display = ['name', 'phone', 'password', 'group', 'registration_date']
     search_fields = ['name', 'phone']
     list_filter = ['group']
     inlines = [RecordInline, PaymentInline]
