@@ -8,6 +8,8 @@ def login_view(request):
     if request.method == 'POST':
         phone = request.POST.get('phone')
         password = request.POST.get('password')
+        # student = Student.objects.filter(phone=phone, password=password).first()
+        password = request.POST.get('password')
         student = Student.objects.filter(phone=phone, password=password).first()
         if student:
             request.session['student_id'] = student.id
@@ -40,3 +42,9 @@ def dashboard(request):
         'total_payments': payments.count(),
     }
     return render(request, 'Student_Dashboard.html', context)
+
+
+def logout_view(request):
+    """Clear the logged in student session and redirect to login."""
+    request.session.flush()
+    return redirect('login')

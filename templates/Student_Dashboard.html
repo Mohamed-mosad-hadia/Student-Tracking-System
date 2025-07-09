@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 <html dir="rtl" lang="ar">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,214 +9,218 @@
     <link rel="stylesheet" href="{% static 'Student_page.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<header>
-    <div class="logo">
-        <div class="logo-icon">
-            <i class="fas fa-graduation-cap"></i>
-        </div>
-        <h1 class="logo-text">مركز الجريحي</h1>
-
-    </div>
-
-    <div class="user-info">
-        <div class="user-details">
-            <div class="user-name">{{ student.name }}</div>
-        </div>
-    </div>
-</header>
-
-<div class="container">
-    <div class="dashboard-header">
-        <h1 class="page-title">لوحة متابعة الطالب</h1>
-        <div class="dashboard-actions">
-            <button class="action-btn" onclick="toggleDarkMode()">
-                <i class="fas fa-adjust"></i><span>الوضع الليلي</span>
-            </button>
-            <button class="action-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>تسجيل الخروج</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Stats Overview -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon attendance-icon">
-                <i class="fas fa-user-check"></i>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
             </div>
-            <div class="stat-title">معدل الحضور</div>
-            <div class="stat-value">{{ attendance_rate }}%</div>
-            <div class="stat-subtext">من مجموع الجلسات</div>
+            <h1 class="logo-text">مركز الجريحي</h1>
+
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon payment-icon">
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-name">{{ student.name }}</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="page-title">لوحة متابعة الطالب</h1>
+            <div class="dashboard-actions">
+                <button class="action-btn" onclick="toggleDarkMode()">
+                    <i class="fas fa-adjust"></i><span>الوضع الليلي</span>
+                </button>
+                <button class="action-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon attendance-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-title">معدل الحضور</div>
+                <div class="stat-value">{{ attendance_rate }}%</div>
+                <div class="stat-subtext">من مجموع الجلسات</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon payment-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="stat-title">حالة الدفع</div>
+                <div class="stat-value">{{ paid_count }}/{{ total_payments }}</div>
+                <div class="stat-subtext">أشهر مدفوعة</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon grade-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-title">متوسط الدرجات</div>
+                <div class="stat-value">{{ avg_grade }}/10</div>
+                <div class="stat-subtext">&nbsp;</div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- Student Info Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-graduate"></i>
+                معلومات الطالب
+            </div>
+            <div class="card-body">
+                <div class="student-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">الاسم الكامل</div>
+                        <div class="info-value">{{ student.name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">رقم الهاتف</div>
+                        <div class="info-value">{{ student.phone }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">المجموعة</div>
+                        <div class="info-value"><span class="highlight">{{ student.group.name }}</span></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">تاريخ التسجيل</div>
+                        <div class="info-value">{{ student.registration_date }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">عدد الجلسات</div>
+                        <div class="info-value">{{ records|length }} جلسة</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">آخر حضور</div>
+                        <div class="info-value">{{ records.0.date|default:"-" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Records Table -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-bar"></i>
+                سجل الحضور والدرجات
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="progress-table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الحضور</th>
+                                <th>درجة الورقة</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+                            <tr class="session-row">
+                                <td>{{ record.date }}</td>
+                                <td class="{% if record.attendance %}present{% else %}absent{% endif %}">
+                                    {% if record.attendance %}✅ حاضر{% else %}❌ غائب{% endif %}
+                                </td>
+                                <td
+                                    class="grade-cell {% if record.grade %}{% if record.grade >= 8 %}good-grade{% elif record.grade >= 6 %}avg-grade{% else %}low-grade{% endif %}{% endif %}">
+                                    {{ record.grade|default:"-" }}
+                                </td>
+                                <td>{{ record.notes|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">لا توجد سجلات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div class="card">
+            <div class="card-header">
                 <i class="fas fa-credit-card"></i>
+                الدفعات
             </div>
-            <div class="stat-title">حالة الدفع</div>
-            <div class="stat-value">{{ paid_count }}/{{ total_payments }}</div>
-            <div class="stat-subtext">أشهر مدفوعة</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon grade-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-title">متوسط الدرجات</div>
-            <div class="stat-value">{{ avg_grade }}/10</div>
-            <div class="stat-subtext">&nbsp;</div>
-        </div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- Student Info Card -->
-    <div class="card">
-        <div class="card-header">
-            <i class="fas fa-user-graduate"></i>
-            معلومات الطالب
-        </div>
-        <div class="card-body">
-            <div class="student-info-grid">
-                <div class="info-item">
-                    <div class="info-label">الاسم الكامل</div>
-                    <div class="info-value">{{ student.name }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">رقم الهاتف</div>
-                    <div class="info-value">{{ student.phone }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">المجموعة</div>
-                    <div class="info-value"><span class="highlight">{{ student.group.name }}</span></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">تاريخ التسجيل</div>
-                    <div class="info-value">{{ student.registration_date }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">عدد الجلسات</div>
-                    <div class="info-value">{{ records|length }} جلسة</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">آخر حضور</div>
-                    <div class="info-value">{{ records.0.date|default:"-" }}</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="progress-table">
+                        <thead>
+                            <tr>
+                                <th>الشهر</th>
+                                <th>حالة الدفع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.month|date:'F Y' }}</td>
+                                <td class="{% if payment.is_paid %}paid{% else %}unpaid{% endif %}">
+                                    {% if payment.is_paid %}✅{% else %}❌{% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">لا توجد دفعات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Attendance Records Table -->
-    <div class="card">
-        <div class="card-header">
-            <i class="fas fa-chart-bar"></i>
-            سجل الحضور والدرجات
-        </div>
-        <div class="card-body">
-            <div class="table-container">
-                <table class="progress-table">
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>الحضور</th>
-                            <th>درجة الورقة</th>
-                            <th>ملاحظات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in records %}
-                        <tr class="session-row">
-                            <td>{{ record.date }}</td>
-                            <td class="{% if record.attendance %}present{% else %}absent{% endif %}">
-                                {% if record.attendance %}✅ حاضر{% else %}❌ غائب{% endif %}
-                            </td>
-                            <td class="grade-cell {% if record.grade %}{% if record.grade >= 8 %}good-grade{% elif record.grade >= 6 %}avg-grade{% else %}low-grade{% endif %}{% endif %}">
-                                {{ record.grade|default:"-" }}
-                            </td>
-                            <td>{{ record.notes|default:"-" }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">لا توجد سجلات</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">
+                <i class="far fa-copyright"></i>
+                <span>Mohamed Mosaad Software Engineer</span>
+                <span>جميع الحقوق محفوظة</span><br>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <!-- Payments Table -->
-    <div class="card">
-        <div class="card-header">
-            <i class="fas fa-credit-card"></i>
-            الدفعات
-        </div>
-        <div class="card-body">
-            <div class="table-container">
-                <table class="progress-table">
-                    <thead>
-                        <tr>
-                            <th>الشهر</th>
-                            <th>حالة الدفع</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for payment in payments %}
-                        <tr>
-                            <td>{{ payment.month|date:'F Y' }}</td>
-                            <td class="{% if payment.is_paid %}paid{% else %}unpaid{% endif %}">
-                                {% if payment.is_paid %}✅{% else %}❌{% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="2">لا توجد دفعات</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <script>
+        // تسجيل الخروج
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            if (confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟')) {
+                alert('تم تسجيل الخروج بنجاح. سيتم توجيهك إلى صفحة تسجيل الدخول.');
+                // window.location.href = '/login';
+                window.location.href = "{% url 'logout' %}";
+            }
+        });
 
-</div>
-
-<footer>
-    <div class="footer-content">
-        <div class="copyright">
-            <i class="far fa-copyright"></i>
-            <span>Mohamed Mosaad Software Engineer</span>
-            <span>جميع الحقوق محفوظة</span><br>
-        </div>
-    </div>
-</footer>
-
-<script>
-    // تسجيل الخروج
-    document.getElementById('logoutBtn').addEventListener('click', function () {
-        if (confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟')) {
-            alert('تم تسجيل الخروج بنجاح. سيتم توجيهك إلى صفحة تسجيل الدخول.');
-            // window.location.href = '/login';
+        // تفعيل الوضع الليلي
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
         }
-    });
 
-    // تفعيل الوضع الليلي
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
-
-    // تحميل الوضع الليلي إذا تم تفعيله مسبقًا
-    window.onload = function () {
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-    };
-</script>
+        // تحميل الوضع الليلي إذا تم تفعيله مسبقًا
+        window.onload = function () {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        };
+    </script>
 
 </body>
+
 </html>
