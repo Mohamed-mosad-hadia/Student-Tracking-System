@@ -1,18 +1,19 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from students.models import Student
 from django.db.models import Avg
 
 
 def login_view(request):
+    error = None
     if request.method == 'POST':
         phone = request.POST.get('phone')
-        student = Student.objects.filter(phone=phone).first()
+        password = request.POST.get('password')
+        student = Student.objects.filter(phone=phone, password=password).first()
         if student:
             request.session['student_id'] = student.id
             return redirect('dashboard')
-        messages.error(request, 'رقم الهاتف غير صحيح')
-    return render(request, 'login.html')
+        error = 'رقم الهاتف أو كلمة المرور غير صحيحة'
+    return render(request, 'login.html', {'error': error})
 
 
 def dashboard(request):

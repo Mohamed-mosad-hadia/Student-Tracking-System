@@ -15,6 +15,7 @@ class Group(models.Model):
 class Student(models.Model):
     name = models.CharField(max_length=100, verbose_name='الاسم الكامل')
     phone = models.CharField(max_length=20, unique=True, verbose_name='رقم الهاتف')
+    password = models.CharField(max_length=128, verbose_name='كلمة المرور')
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, verbose_name='المجموعة')
     registration_date = models.DateField(auto_now_add=True, verbose_name='تاريخ التسجيل')
 
