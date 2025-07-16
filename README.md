@@ -1,4 +1,4 @@
-# 🎓 Codex – Student Tracking System for Educational Centers
+# 🎓 Student Tracking System for Educational Centers
 
 **Codex** is a web-based student management and tracking system developed using **Django**. It’s designed for educational centers to monitor student progress, attendance, payments, and academic performance through a clean and user-friendly interface.
 
@@ -35,7 +35,7 @@
 ## 🧩 Installation
 ```bash
 git clone https://github.com/Mohamed-mosad-hadia/Codex.git
-cd Codex
+cd 
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
