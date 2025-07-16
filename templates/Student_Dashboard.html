@@ -1,226 +1,282 @@
 <!DOCTYPE html>
 {% load static %}
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة متابعة الطالب</title>
-    <link href="{% static 'Student_page.css' %}" rel="stylesheet">
+    <title>لوحة الطالب - مركز الجريحي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --success: #28C76F;
+            --danger: #F87171;
+            --background: #F8F9FA;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            padding: 16px;
+        }
+
+        header {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            background-image: url("{% static 'header.jpg' %}");
+            background-size: cover;
+            background-position: width 100% center;
+            color: var(--text-primary);
+
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-logo {
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(247, 241, 241, 0.1);
+            color: #F8F9FA;
+
+
+        }
+
+        .student-info {
+            font-size: 14px;
+            color: whitesmoke;
+            margin-top: 8px;
+            text-shadow: #91dc58;
+        }
+
+        .cards {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            flex: 1 1 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border-right: 6px solid #4caf50;
+
+        }
+
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .card .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px 16px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+            display: inline-block;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin: 16px 0;
+        }
+
+        .action-btn {
+            background-color: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn i {
+            font-size: 16px;
+        }
+
+        .action-btn:hover {
+            background-color: #e64949;
+            /* لون أغمق عند التحويم */
+        }
+
+
+        .success {
+            background-color: var(--success);
+        }
+
+        .danger {
+            background-color: var(--danger);
+        }
+
+        @media (min-width: 600px) {
+            .card {
+                flex: 1 1 calc(33.333% - 8px);
+            }
+        }
+    </style>
 </head>
 
 <body>
-
     <header>
-        <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
-            <h1 class="logo-text">مركز الجريحي</h1>
-
+        <div class="header-top">
+            <div class="header-logo">🎓 مركز د/ الجرايحي التعليمي</div>
+        </div>
+        <div class="student-info">
+            الاسم: {{ student.name }}<br>
+            رقم الهاتف: {{ student.phone }}<br>
+            المجموعة: {{ student.group.name }}
         </div>
 
-        <div class="user-info">
-            <div class="user-details">
-                <div class="user-name">{{ student.name }}</div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="dashboard-header">
-            <h1 class="page-title">لوحة متابعة الطالب</h1>
-            <div class="dashboard-actions">
-                <button class="action-btn" onclick="toggleDarkMode()">
-                    <i class="fas fa-adjust"></i><span>الوضع الليلي</span>
-                </button>
-                <button class="action-btn" id="logoutBtn">
+        <!-- logout function -->
+        <div class="dashboard-actions">
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="action-btn" type="submit">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>تسجيل الخروج</span>
                 </button>
-            </div>
+            </form>
+
         </div>
+    </header>
 
-        <!-- Stats Overview -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon attendance-icon">
-                    <i class="fas fa-user-check"></i>
-                </div>
-                <div class="stat-title">معدل الحضور</div>
-                <div class="stat-value">{{ attendance_rate }}%</div>
-                <div class="stat-subtext">من مجموع الجلسات</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon payment-icon">
-                    <i class="fas fa-credit-card"></i>
-                </div>
-                <div class="stat-title">حالة الدفع</div>
-                <div class="stat-value">{{ paid_count }}/{{ total_payments }}</div>
-                <div class="stat-subtext">أشهر مدفوعة</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon grade-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-title">متوسط الدرجات</div>
-                <div class="stat-value">{{ avg_grade }}/10</div>
-                <div class="stat-subtext">&nbsp;</div>
-            </div>
-        </div>
-
-        <hr class="section-divider">
-
-        <!-- Student Info Card -->
+    <section class="cards">
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-user-graduate"></i>
-                معلومات الطالب
-            </div>
-            <div class="card-body">
-                <div class="student-info-grid">
-                    <div class="info-item">
-                        <div class="info-label">الاسم الكامل</div>
-                        <div class="info-value">{{ student.name }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">رقم الهاتف</div>
-                        <div class="info-value">{{ student.phone }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">المجموعة</div>
-                        <div class="info-value"><span class="highlight">{{ student.group.name }}</span></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">تاريخ التسجيل</div>
-                        <div class="info-value">{{ student.registration_date }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">عدد الجلسات</div>
-                        <div class="info-value">{{ records|length }} جلسة</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">آخر حضور</div>
-                        <div class="info-value">{{ records.0.date|default:"-" }}</div>
-                    </div>
-                </div>
-            </div>
+            <h3>متوسط الدرجات</h3>
+            <div class="value">{{ avg_grade | floatformat:-1|cut:"," }}</div>
         </div>
-
-        <!-- Attendance Records Table -->
+        </div>
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-chart-bar"></i>
-                سجل الحضور والدرجات
-            </div>
-            <div class="card-body">
-                <div class="table-container">
-                    <table class="progress-table">
-                        <thead>
-                            <tr>
-                                <th>التاريخ</th>
-                                <th>الحضور</th>
-                                <th>درجة الورقة</th>
-                                <th>ملاحظات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for record in records %}
-                            <tr class="session-row">
-                                <td>{{ record.date }}</td>
-                                <td class="{% if record.attendance %}present{% else %}absent{% endif %}">
-                                    {% if record.attendance %}✅ حاضر{% else %}❌ غائب{% endif %}
-                                </td>
-                                <td
-                                    class="grade-cell {% if record.grade %}{% if record.grade >= 8 %}good-grade{% elif record.grade >= 6 %}avg-grade{% else %}low-grade{% endif %}{% endif %}">
-                                    {{ record.grade|default:"-" }}
-                                </td>
-                                <td>{{ record.notes|default:"-" }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4">لا توجد سجلات</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <h3>نسبة الحضور</h3>
+            <div class="value">{{ attendance_rate }}%</div>
         </div>
-
-        <!-- Payments Table -->
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-credit-card"></i>
-                الدفعات
-            </div>
-            <div class="card-body">
-                <div class="table-container">
-                    <table class="progress-table">
-                        <thead>
-                            <tr>
-                                <th>الشهر</th>
-                                <th>حالة الدفع</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for payment in payments %}
-                            <tr>
-                                <td>{{ payment.month|date:'F Y' }}</td>
-                                <td class="{% if payment.is_paid %}paid{% else %}unpaid{% endif %}">
-                                    {% if payment.is_paid %}✅{% else %}❌{% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="2">لا توجد دفعات</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <h3>الدفعات المدفوعة</h3>
+            <div class="value">{{ paid_count }}/{{ total_payments }}</div>
         </div>
+    </section>
 
-    </div>
+    <section>
+        <h3>سجل الحضور والغياب</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>التاريخ</th>
+                    <th>الدرجة</th>
+                    <th>الحالة</th>
+                    <th>الملاحظات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in student.records.all %}
+                <tr>
+                    <td>{{ record.date|date:"d/m/Y" }}</td>
+                    <td>{% if record.grade %}{{ record.grade|floatformat:1 }}{% else %}-{% endif %}</td>
+                    <td>
+                        {% if record.attendance %}
+                        <span class="badge success">حضر</span>
+                        {% else %}
+                        <span class="badge danger">غاب</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ record.notes|default:"بدون ملاحظات" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">لا توجد سجلات حضور حالياً.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <footer>
-        <div class="footer-content">
-            <div class="copyright">
-                <i class="far fa-copyright"></i>
-                <span>Mohamed Mosaad Software Engineer</span>
-                <span>جميع الحقوق محفوظة</span><br>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // تسجيل الخروج
-        document.getElementById('logoutBtn').addEventListener('click', function () {
-            if (confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟')) {
-                alert('تم تسجيل الخروج بنجاح. سيتم توجيهك إلى صفحة تسجيل الدخول.');
-                // window.location.href = '/login';
-                window.location.href = "{% url 'logout' %}";
-            }
-        });
-
-        // تفعيل الوضع الليلي
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
-
-        // تحميل الوضع الليلي إذا تم تفعيله مسبقًا
-        window.onload = function () {
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-        };
-    </script>
-
+        <h3>سجل الدفعات الشهرية</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>الشهر</th>
+                    <th>حالة الدفع</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in student.payments.all %}
+                <tr>
+                    <td>{{ payment.month|date:"F Y" }}</td>
+                    <td>
+                        {% if payment.is_paid %}
+                        <span class="badge success">مدفوع</span>
+                        {% else %}
+                        <span class="badge danger">غير مدفوع</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">لا توجد دفعات حالياً.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <p>تاريخ التسجيل : {{student.registration_date|date:"Y/m/d" }}</p>
 </body>
 
 </html>
